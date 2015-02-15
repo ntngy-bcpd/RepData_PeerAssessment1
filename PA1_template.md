@@ -1,10 +1,6 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-```{r settings, echo=TRUE, message=FALSE}
+# Reproducible Research: Peer Assessment 1
+
+```r
 ## Set knitr global settings
 require(knitr)
 require(ggplot2)
@@ -13,7 +9,8 @@ opts_chunk$set(echo=TRUE, results="markup", warning=FALSE, message=FALSE)
 
 
 ## Loading and preprocessing the data
-```{r loaddata}
+
+```r
 if (!file.exists("activity.csv")) {
     unzip("activity.zip")
 }
@@ -24,7 +21,8 @@ activity$steps <- as.numeric(activity$steps)
 
 ## What is mean total number of steps taken per day?
 
-```{r dailysteps}
+
+```r
 ## Calculate the sum of steps by day
 activityByDays <- aggregate(list(totalSteps = activity$steps), 
                             by=list(day=activity$date), 
@@ -35,7 +33,10 @@ hist(activityByDays$totalSteps,
      main = "Histogram of Total Number of Steps Taken per Day")
 ```
 
-```{r meanmediansteps}
+![plot of chunk dailysteps](PA1_template_files/figure-html/dailysteps.png) 
+
+
+```r
 ## Calculate the means
 meanNumSteps <- mean(activityByDays$totalSteps, na.rm=TRUE)
 meanNumSteps <- as.integer(round(meanNumSteps, digits = 0))
@@ -46,13 +47,14 @@ medianNumSteps <- as.integer(round(medianNumSteps, digits = 0))
 ```
 
 
-The mean total number of steps taken per day is `r meanNumSteps`.
+The mean total number of steps taken per day is 9354.
 
-The median total number of steps taken per day is `r medianNumSteps`.
+The median total number of steps taken per day is 10395.
 
 
 ## What is the average daily activity pattern?
-```{r dailyactivitypattern}
+
+```r
 ## Average number of steps by interval
 activityByIntervals <- aggregate(list(avgSteps = activity$steps), 
                           by=list(interval=activity$interval),
@@ -66,26 +68,32 @@ plotDaily <- ggplot(activityByIntervals, aes(x=interval, y=avgSteps)) +
              ylab("Average Number of Steps") +
              ggtitle("Average Daily Activity Pattern")
 print(plotDaily)
+```
 
+![plot of chunk dailyactivitypattern](PA1_template_files/figure-html/dailyactivitypattern.png) 
+
+```r
 ## The interval with max number of steps
 maxStepsInterval <- activityByIntervals[activityByIntervals$avgSteps
                                     ==max(activityByIntervals$avgSteps),][1]
 ```
 
 
-The 5-minute interval, on average across all the days in the dataset, having the maximum number of steps is `r maxStepsInterval`.
+The 5-minute interval, on average across all the days in the dataset, having the maximum number of steps is 835.
 
 
 ## Imputing missing values
-```{r missingvalues}
+
+```r
 numberOfMissings <- sum(is.na(activity$steps))
 ```
 
 
-The number of missing step values is `r numberOfMissings`.
+The number of missing step values is 2304.
 
 
-```{r replacemissings}
+
+```r
 ## Replace the missing value at one interval
 ## with the average of that interval
 activityFixedNA <- activity
@@ -106,7 +114,11 @@ hist(activityFixedNAByDays$totalSteps,
      ylim = range(0, 40),
      xlab = "Number of Steps per Day",
      main = "Histogram of Total Number of Steps Taken per Day - with NA Fixed")
+```
 
+![plot of chunk replacemissings](PA1_template_files/figure-html/replacemissings.png) 
+
+```r
 ## Calculate the means with NA fixed
 meanNumStepsFixedNA <- mean(activityFixedNAByDays$totalSteps, na.rm=TRUE)
 meanNumStepsFixedNA <- as.integer(round(meanNumStepsFixedNA, digits = 0))
@@ -117,15 +129,16 @@ medianNumStepsFixedNA <- as.integer(round(medianNumStepsFixedNA, digits = 0))
 ```
 
 
-The mean total number of steps taken per day after fixing missing values is `r meanNumStepsFixedNA` compared with `r meanNumSteps` before the fix.
+The mean total number of steps taken per day after fixing missing values is 10766 compared with 9354 before the fix.
 
-The median total number of steps taken per day after fixing missing values is `r medianNumStepsFixedNA` compared with `r medianNumSteps` before the fix.
+The median total number of steps taken per day after fixing missing values is 10766 compared with 10395 before the fix.
 
 Replacing the missing values with the corresponding interval averages reduces the left-skewedness of the histogram and moves the mean total of steps towards the median total of steps.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r weekdayweekend}
+
+```r
 ## Activity by weekday and weekend
 activityFixedWday <- activityFixedNA
 activityFixedWday$day <- weekdays(as.Date(activityFixedWday$date))
@@ -156,6 +169,8 @@ plotWday <- ggplot(activityFWByIntervals, aes(x=interval, y=avgSteps)) +
 
 print(plotWday)
 ```
+
+![plot of chunk weekdayweekend](PA1_template_files/figure-html/weekdayweekend.png) 
 
 
 The weekday and weekend activity patterns show two main differences. There are more activities in the period between 5:00 and 8:00 in the weekday pattern than in the weekend one. One possible explanation is this person wakes up later during weekend. There are less activities in the period between 10:00 and 17:00 in the weekday pattern than in the weekend one. One possible explanation is that this person's work may not involve much movement during weekdays.
