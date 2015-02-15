@@ -113,6 +113,7 @@ maxStepsInterval &lt;- activityByIntervals[activityByIntervals$avgSteps
 <h2>Imputing missing values</h2>
 <pre class="r"><code>numberOfMissings &lt;- sum(is.na(activity$steps))</code></pre>
 <p>The number of missing step values is 2304.</p>
+<p>The missing values will be replaced by the daily averages of corresponding intervals. These averages have been calculated for the plot of daily activity pattern.</p>
 <pre class="r"><code>## Replace the missing value at one interval
 ## with the average of that interval
 activityFixedNA &lt;- activity

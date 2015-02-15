@@ -91,6 +91,8 @@ numberOfMissings <- sum(is.na(activity$steps))
 
 The number of missing step values is 2304.
 
+The missing values will be replaced by the daily averages of corresponding intervals. These averages have been calculated for the plot of daily activity pattern.
+
 
 
 ```r
